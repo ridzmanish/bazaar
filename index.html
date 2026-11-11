@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="hi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f7fb" />
+    <meta
+      name="description"
+      content="Shop smart with Bazaar — electronics, fashion, home essentials and more."
+    />
+    <title>Bazaar — Har din ki smart shopping</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div class="announcement">✨ Badi savings, har din · ₹499 se upar free delivery</div>
+      <header class="site-header">
+        <a class="brand" href="#" aria-label="Bazaar home">
+          <span class="brand-mark">b</span><span>bazaar<span class="brand-dot">.</span></span>
+        </a>
+        <form class="search" id="search-form" role="search">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="search-input" type="search" placeholder="Kya dhoondh rahe ho?" aria-label="Products search" />
+          <button type="submit">Search</button>
+        </form>
+        <div class="header-actions">
+          <button class="icon-button account-button" type="button" aria-label="Account">
+            <span class="line-icon">♙</span><span class="action-label">Account</span>
+          </button>
+          <button class="icon-button cart-button" id="cart-open" type="button" aria-label="Open shopping cart">
+            <span class="line-icon">♧</span><span class="action-label">Cart</span>
+            <span class="cart-count" id="cart-count">0</span>
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero" aria-label="Featured offer">
+          <div class="hero-copy">
+            <span class="eyebrow"><span class="spark">✳</span> THE EVERYDAY EDIT</span>
+            <h1>Acchi cheezein.<br /><span>Behtar prices.</span></h1>
+            <p>Har din ke favourites, ab aapke budget mein. Discover karo, pasand karo, cart mein daalo.</p>
+            <a class="primary-button hero-cta" href="#shop">Shop the collection <span>↗</span></a>
+            <div class="hero-proof"><span class="proof-avatars">A&nbsp; R&nbsp; S</span><span>10,000+ happy shoppers</span><span class="proof-stars">★★★★★</span></div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+            <div class="hero-product hero-headphones">🎧</div>
+            <div class="hero-product hero-bag">👜</div>
+            <div class="hero-product hero-sneaker">👟</div>
+            <div class="hero-sticker">UP TO<br /><b>60% OFF</b></div>
+            <span class="art-spark spark-one">✳</span><span class="art-spark spark-two">✦</span>
+          </div>
+          <div class="hero-index"><span>01</span> / 03 <span class="index-line"></span> TRENDING NOW</div>
+        </section>
+
+        <section class="benefits" aria-label="Shopping benefits">
+          <div class="benefit"><span class="benefit-icon">↗</span><div><b>Free delivery</b><span>Orders over ₹499</span></div></div>
+          <div class="benefit"><span class="benefit-icon">⟳</span><div><b>Easy returns</b><span>7-day return window</span></div></div>
+          <div class="benefit"><span class="benefit-icon">♧</span><div><b>Secure checkout</b><span>Safe &amp; trusted payments</span></div></div>
+          <div class="benefit"><span class="benefit-icon">♡</span><div><b>Made for you</b><span>Only good finds here</span></div></div>
+        </section>
+
+        <section class="shop-section" id="shop">
+          <div class="section-heading">
+            <div><span class="eyebrow">A LITTLE BIT OF EVERYTHING</span><h2>Shop by category<span class="brand-dot">.</span></h2></div>
+            <p>Good finds, sorted just for you.</p>
+          </div>
+          <div class="category-list" id="categories" aria-label="Product categories">
+            <button class="category-card active" type="button" data-category="All finds"><span class="category-art" style="--category-color:#eae6ff">✳</span><span>All finds</span><span class="category-arrow">↗</span></button>
+            <button class="category-card" type="button" data-category="Electronics"><span class="category-art" style="--category-color:#e4e9ff">🎧</span><span>Electronics</span><span class="category-arrow">↗</span></button>
+            <button class="category-card" type="button" data-category="Fashion"><span class="category-art" style="--category-color:#fce8df">👟</span><span>Fashion</span><span class="category-arrow">↗</span></button>
+            <button class="category-card" type="button" data-category="Home & Living"><span class="category-art" style="--category-color:#e1f1e9">🪴</span><span>Home &amp; Living</span><span class="category-arrow">↗</span></button>
+            <button class="category-card" type="button" data-category="Beauty"><span class="category-art" style="--category-color:#f9e3ed">✨</span><span>Beauty</span><span class="category-arrow">↗</span></button>
+          </div>
+
+          <div class="product-heading">
+            <div><span class="eyebrow">THE GOOD STUFF</span><h2 id="product-title">Popular right now<span class="brand-dot">.</span></h2></div>
+            <label class="sort-control">Sort by
+              <select id="sort-select" aria-label="Sort products">
+                <option value="featured">Featured</option>
+                <option value="price-low">Price: Low to high</option>
+                <option value="price-high">Price: High to low</option>
+                <option value="rating">Top rated</option>
+              </select>
+            </label>
+          </div>
+          <p class="result-count" id="result-count" aria-live="polite">8 products to love</p>
+          <div class="product-grid" id="product-grid" aria-live="polite">
+            <article class="product-card"><div class="product-image" style="--product-color:#ebe8ff"><span class="product-badge">BESTSELLER</span><button class="favorite-button" type="button" aria-label="Save Studio wireless headphones" data-favorite="p1">♡</button><span class="product-emoji" aria-hidden="true">🎧</span><button class="quick-add" type="button" data-add="p1">+ Quick add</button></div><div class="product-info"><span class="product-category">Electronics</span><h3>Studio wireless headphones</h3><div class="rating-line"><span class="rating-star">★</span> 4.8 <span class="review-count">(1,240)</span></div><div class="price-line"><b>₹2,499</b><s>₹3,999</s><span>38% off</span></div></div></article>
+            <article class="product-card"><div class="product-image" style="--product-color:#fce8df"><span class="product-badge">TRENDING</span><button class="favorite-button" type="button" aria-label="Save Everyday crossbody bag" data-favorite="p2">♡</button><span class="product-emoji" aria-hidden="true">👜</span><button class="quick-add" type="button" data-add="p2">+ Quick add</button></div><div class="product-info"><span class="product-category">Fashion</span><h3>Everyday crossbody bag</h3><div class="rating-line"><span class="rating-star">★</span> 4.6 <span class="review-count">(862)</span></div><div class="price-line"><b>₹1,299</b><s>₹1,999</s><span>35% off</span></div></div></article>
+            <article class="product-card"><div class="product-image" style="--product-color:#e1f1e9"><span class="product-badge">TOP RATED</span><button class="favorite-button" type="button" aria-label="Save Cloud-soft everyday sneakers" data-favorite="p3">♡</button><span class="product-emoji" aria-hidden="true">👟</span><button class="quick-add" type="button" data-add="p3">+ Quick add</button></div><div class="product-info"><span class="product-category">Fashion</span><h3>Cloud-soft everyday sneakers</h3><div class="rating-line"><span class="rating-star">★</span> 4.7 <span class="review-count">(2,104)</span></div><div class="price-line"><b>₹1,899</b><s>₹2,999</s><span>37% off</span></div></div></article>
+            <article class="product-card"><div class="product-image" style="--product-color:#faeddb"><button class="favorite-button" type="button" aria-label="Save Ceramic coffee ritual set" data-favorite="p4">♡</button><span class="product-emoji" aria-hidden="true">☕</span><button class="quick-add" type="button" data-add="p4">+ Quick add</button></div><div class="product-info"><span class="product-category">Home &amp; Living</span><h3>Ceramic coffee ritual set</h3><div class="rating-line"><span class="rating-star">★</span> 4.5 <span class="review-count">(432)</span></div><div class="price-line"><b>₹899</b><s>₹1,499</s><span>40% off</span></div></div></article>
+            <article class="product-card"><div class="product-image" style="--product-color:#f9e3ed"><span class="product-badge">LOVED</span><button class="favorite-button" type="button" aria-label="Save The daily glow skincare kit" data-favorite="p5">♡</button><span class="product-emoji" aria-hidden="true">🧴</span><button class="quick-add" type="button" data-add="p5">+ Quick add</button></div><div class="product-info"><span class="product-category">Beauty</span><h3>The daily glow skincare kit</h3><div class="rating-line"><span class="rating-star">★</span> 4.9 <span class="review-count">(986)</span></div><div class="price-line"><b>₹1,499</b><s>₹2,199</s><span>32% off</span></div></div></article>
+            <article class="product-card"><div class="product-image" style="--product-color:#e3eafa"><button class="favorite-button" type="button" aria-label="Save Pocket-size smart speaker" data-favorite="p6">♡</button><span class="product-emoji" aria-hidden="true">🔊</span><button class="quick-add" type="button" data-add="p6">+ Quick add</button></div><div class="product-info"><span class="product-category">Electronics</span><h3>Pocket-size smart speaker</h3><div class="rating-line"><span class="rating-star">★</span> 4.4 <span class="review-count">(671)</span></div><div class="price-line"><b>₹1,799</b><s>₹2,499</s><span>28% off</span></div></div></article>
+            <article class="product-card"><div class="product-image" style="--product-color:#f4e9dc"><span class="product-badge">JUST IN</span><button class="favorite-button" type="button" aria-label="Save Weekend getaway backpack" data-favorite="p7">♡</button><span class="product-emoji" aria-hidden="true">🎒</span><button class="quick-add" type="button" data-add="p7">+ Quick add</button></div><div class="product-info"><span class="product-category">Fashion</span><h3>Weekend getaway backpack</h3><div class="rating-line"><span class="rating-star">★</span> 4.6 <span class="review-count">(519)</span></div><div class="price-line"><b>₹1,599</b><s>₹2,399</s><span>33% off</span></div></div></article>
+            <article class="product-card"><div class="product-image" style="--product-color:#f7f0d7"><button class="favorite-button" type="button" aria-label="Save Little moments desk lamp" data-favorite="p8">♡</button><span class="product-emoji" aria-hidden="true">💡</span><button class="quick-add" type="button" data-add="p8">+ Quick add</button></div><div class="product-info"><span class="product-category">Home &amp; Living</span><h3>Little moments desk lamp</h3><div class="rating-line"><span class="rating-star">★</span> 4.7 <span class="review-count">(308)</span></div><div class="price-line"><b>₹1,099</b><s>₹1,699</s><span>35% off</span></div></div></article>
+          </div>
+          <div class="empty-state" id="empty-state" hidden>
+            <span>⌕</span><h3>Kuch nahi mila</h3><p>Search ya category change karke dekhein.</p>
+            <button type="button" class="text-button" id="clear-filters">Show all products</button>
+          </div>
+        </section>
+
+        <section class="newsletter">
+          <div><span class="eyebrow">GOOD THINGS IN YOUR INBOX</span><h2>Deals miss mat karo.</h2><p>New drops, little surprises and offers worth opening.</p></div>
+          <form id="newsletter-form"><label class="sr-only" for="email-input">Email address</label><input id="email-input" type="email" placeholder="Your email address" required /><button type="submit">Count me in <span>↗</span></button></form>
+        </section>
+      </main>
+      <footer class="site-footer"><a class="brand footer-brand" href="#"><span class="brand-mark">b</span><span>bazaar<span class="brand-dot">.</span></span></a><p>Shopping that just feels right.</p><span>© 2026 Bazaar. Made for everyday.</span></footer>
+
+      <div class="overlay" id="cart-overlay" hidden></div>
+      <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart" aria-hidden="true">
+        <div class="drawer-header"><div><span class="eyebrow">YOUR BAG</span><h2>Your cart<span class="brand-dot">.</span></h2></div><button id="cart-close" class="close-button" aria-label="Close cart" type="button">×</button></div>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-empty" id="cart-empty"><span>🛍️</span><h3>Abhi cart khaali hai</h3><p>Kuch pasand aaye? Add it here.</p><button class="primary-button" id="continue-shopping" type="button">Explore products</button></div>
+        <div class="cart-footer" id="cart-footer" hidden>
+          <div class="subtotal-row"><span>Subtotal</span><b id="cart-subtotal">₹0</b></div>
+          <p>Shipping and taxes calculated at checkout.</p>
+          <button type="button" class="checkout-button" id="checkout-button">Continue to checkout <span>→</span></button>
+        </div>
+      </aside>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
