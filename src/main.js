@@ -31,12 +31,17 @@ let searchTerm = '';
 let sortMode = 'featured';
 let cart = loadCart();
 let toastTimer;
+let authMode = 'signin';
+let currentUser = null;
 
 const productGrid = document.querySelector('#product-grid');
 const categoriesEl = document.querySelector('#categories');
 const cartDrawer = document.querySelector('#cart-drawer');
 const overlay = document.querySelector('#cart-overlay');
 const toastEl = document.querySelector('#toast');
+const accountDialog = document.querySelector('#account-dialog');
+const accountForm = document.querySelector('#account-form');
+const authMessage = document.querySelector('#auth-message');
 
 function loadCart() {
   try {
@@ -57,6 +62,42 @@ function showToast(message) {
   toastEl.classList.add('visible');
   window.clearTimeout(toastTimer);
   toastTimer = window.setTimeout(() => toastEl.classList.remove('visible'), 2600);
+}
+
+function showAuthMessage(message) {
+  authMessage.textContent = message;
+  authMessage.hidden = !message;
+}
+
+function renderAccount() {
+  const isSignedIn = Boolean(currentUser);
+  document.querySelector('#auth-panel').hidden = isSignedIn;
+  document.querySelector('#account-profile').hidden = !isSignedIn;
+  document.querySelector('#account-title').innerHTML = isSignedIn
+    ? 'Your account<span class="brand-dot">.</span>'
+    : authMode === 'signup' ? 'Create account<span class="brand-dot">.</span>' : 'Welcome back<span class="brand-dot">.</span>';
+  if (isSignedIn) {
+    document.querySelector('#account-user-email').textContent = currentUser.email || '';
+    return;
+  }
+
+  const configured = Boolean(supabase);
+  document.querySelector('#account-description').textContent = authMode === 'signup'
+    ? 'Create an account with your email and a password.'
+    : 'Sign in to your account to continue.';
+  document.querySelector('#display-name-field').hidden = authMode !== 'signup';
+  document.querySelector('#display-name').required = authMode === 'signup';
+  document.querySelector('#account-password').autocomplete = authMode === 'signup' ? 'new-password' : 'current-password';
+  document.querySelector('#account-submit').textContent = authMode === 'signup' ? 'Create account' : 'Sign in';
+  document.querySelector('#auth-switch').hidden = !configured;
+  accountForm.hidden = !configured;
+  showAuthMessage(configured ? '' : 'Account sign-in is unavailable until Supabase is configured.');
+}
+
+function openAccount() {
+  authMode = 'signin';
+  renderAccount();
+  accountDialog.showModal();
 }
 
 function renderCategories() {
@@ -226,6 +267,71 @@ document.querySelector('#cart-open').addEventListener('click', openCart);
 document.querySelector('#cart-close').addEventListener('click', closeCart);
 document.querySelector('#continue-shopping').addEventListener('click', closeCart);
 overlay.addEventListener('click', closeCart);
+document.querySelector('#account-open').addEventListener('click', openAccount);
+document.querySelector('#account-close').addEventListener('click', () => accountDialog.close());
+document.querySelector('#auth-toggle').addEventListener('click', () => {
+  authMode = authMode === 'signin' ? 'signup' : 'signin';
+  accountForm.reset();
+  showAuthMessage('');
+  document.querySelector('#auth-toggle').textContent = authMode === 'signup' ? 'Sign in' : 'Create an account';
+  document.querySelector('#auth-switch').firstChild.textContent = authMode === 'signup' ? 'Already have an account? ' : 'New to Bazaar? ';
+  renderAccount();
+});
+accountForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  if (!supabase) {
+    showAuthMessage('Account sign-in is unavailable until Supabase is configured.');
+    return;
+  }
+
+  const submitButton = document.querySelector('#account-submit');
+  const toggleButton = document.querySelector('#auth-toggle');
+  const formData = new FormData(accountForm);
+  const submittingMode = authMode;
+  const email = String(formData.get('email')).trim();
+  const password = String(formData.get('password'));
+  submitButton.disabled = true;
+  toggleButton.disabled = true;
+  showAuthMessage('');
+  try {
+    const result = submittingMode === 'signup'
+      ? await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: String(formData.get('name')).trim() } },
+      })
+      : await supabase.auth.signInWithPassword({ email, password });
+
+    if (result.error) {
+      showAuthMessage(result.error.message);
+    } else if (submittingMode === 'signup' && !result.data.session) {
+      showAuthMessage('Check your email for a confirmation link to finish creating your account.');
+    } else if (submittingMode === 'signup' && result.data.session) {
+      showToast('Your account is ready. Welcome to Bazaar!');
+    }
+  } catch (error) {
+    showAuthMessage(error instanceof Error ? error.message : 'Could not complete the request. Please try again.');
+  } finally {
+    submitButton.disabled = false;
+    toggleButton.disabled = false;
+  }
+});
+document.querySelector('#sign-out').addEventListener('click', async () => {
+  if (!supabase) return;
+  const profileMessage = document.querySelector('#profile-message');
+  profileMessage.hidden = true;
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      profileMessage.textContent = error.message;
+      profileMessage.hidden = false;
+    }
+    else accountDialog.close();
+  } catch (error) {
+    profileMessage.textContent = error instanceof Error ? error.message : 'Could not sign out. Please try again.';
+    profileMessage.hidden = false;
+  }
+});
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && cartDrawer.classList.contains('open')) closeCart();
 });
@@ -239,4 +345,12 @@ document.querySelector('#newsletter-form').addEventListener('submit', (event) =>
 renderCategories();
 renderProducts();
 renderCart();
+if (supabase) {
+  supabase.auth.onAuthStateChange((_event, session) => {
+    currentUser = session?.user || null;
+    renderAccount();
+  });
+} else {
+  renderAccount();
+}
 loadSupabaseProducts();

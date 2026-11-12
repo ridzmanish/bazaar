@@ -24,7 +24,7 @@
           <button type="submit">Search</button>
         </form>
         <div class="header-actions">
-          <button class="icon-button account-button" type="button" aria-label="Account">
+          <button class="icon-button account-button" id="account-open" type="button" aria-label="Open account">
             <span class="line-icon">♙</span><span class="action-label">Account</span>
           </button>
           <button class="icon-button cart-button" id="cart-open" type="button" aria-label="Open shopping cart">
@@ -120,6 +120,36 @@
           <button type="button" class="checkout-button" id="checkout-button">Continue to checkout <span>→</span></button>
         </div>
       </aside>
+      <dialog class="account-dialog" id="account-dialog" aria-labelledby="account-title">
+        <div class="account-dialog-content">
+          <header class="drawer-header">
+            <div><span class="eyebrow">YOUR BAZAAR ACCOUNT</span><h2 id="account-title">Welcome back<span class="brand-dot">.</span></h2></div>
+            <button id="account-close" class="close-button" aria-label="Close account" type="button">×</button>
+          </header>
+          <section id="auth-panel">
+            <p class="account-description" id="account-description">Sign in to your account to continue.</p>
+            <p class="auth-message" id="auth-message" role="status" aria-live="polite" hidden></p>
+            <form id="account-form" class="account-form">
+              <label id="display-name-field" hidden>Full name
+                <input id="display-name" name="name" type="text" autocomplete="name" />
+              </label>
+              <label>Email address
+                <input id="account-email" name="email" type="email" autocomplete="email" required />
+              </label>
+              <label>Password
+                <input id="account-password" name="password" type="password" autocomplete="current-password" minlength="6" required />
+              </label>
+              <button class="primary-button account-submit" id="account-submit" type="submit">Sign in</button>
+            </form>
+            <p class="auth-switch" id="auth-switch">New to Bazaar? <button type="button" id="auth-toggle">Create an account</button></p>
+          </section>
+          <section class="account-profile" id="account-profile" hidden>
+            <p>You’re signed in as <b id="account-user-email"></b>.</p>
+            <p class="auth-message" id="profile-message" role="status" aria-live="polite" hidden></p>
+            <button class="primary-button account-submit" id="sign-out" type="button">Sign out</button>
+          </section>
+        </div>
+      </dialog>
       <div class="toast" id="toast" role="status" aria-live="polite"></div>
     </div>
     <script type="module" src="/src/main.js"></script>
