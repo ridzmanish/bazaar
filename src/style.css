@@ -152,6 +152,15 @@ h1,h2{font-family:Manrope,sans-serif;letter-spacing:-1.6px}
 .auth-message{margin:0;color:#b14254;font-size:10px;line-height:1.5}
 .auth-switch{text-align:center;font-size:10px;color:#85818e;margin:17px 0 0}
 .auth-switch button{border:0;background:transparent;color:var(--purple);font-weight:700;cursor:pointer;padding:0 0 0 3px}
+.auth-alternatives{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
+.auth-divider{grid-column:1/-1;display:flex;align-items:center;gap:10px;color:#9995a0;font-size:9px}
+.auth-divider::before,.auth-divider::after{content:"";height:1px;background:var(--line);flex:1}
+.auth-provider-button{min-height:40px;border:1px solid var(--line);border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:10px;font-weight:600;cursor:pointer}
+.auth-provider-button:hover{border-color:#b9aafa;background:#fcfbff}
+.auth-provider-button:disabled{opacity:.65;cursor:wait}
+.google-mark{font-family:Arial,sans-serif;font-size:15px;font-weight:700;color:#4285f4}
+.phone-auth-actions{display:flex;justify-content:space-between;margin-top:13px}
+.phone-auth-actions .text-button{font-size:10px}
 .account-profile{padding-top:2px}
 .account-profile b{color:var(--ink);overflow-wrap:anywhere}
 .account-submit:disabled{opacity:.65;cursor:wait}

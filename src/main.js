@@ -32,6 +32,8 @@ let sortMode = 'featured';
 let cart = loadCart();
 let toastTimer;
 let authMode = 'signin';
+let authMethod = 'email';
+let phoneOtpSent = false;
 let currentUser = null;
 
 const productGrid = document.querySelector('#product-grid');
@@ -77,7 +79,7 @@ function renderAccount() {
     ? 'Your account<span class="brand-dot">.</span>'
     : authMode === 'signup' ? 'Create account<span class="brand-dot">.</span>' : 'Welcome back<span class="brand-dot">.</span>';
   if (isSignedIn) {
-    document.querySelector('#account-user-email').textContent = currentUser.email || '';
+    document.querySelector('#account-user-identity').textContent = currentUser.email || currentUser.phone || '';
     return;
   }
 
@@ -85,17 +87,28 @@ function renderAccount() {
   document.querySelector('#account-description').textContent = authMode === 'signup'
     ? 'Create an account with your email and a password.'
     : 'Sign in to your account to continue.';
+  document.querySelector('#account-description').hidden = authMethod === 'phone';
   document.querySelector('#display-name-field').hidden = authMode !== 'signup';
   document.querySelector('#display-name').required = authMode === 'signup';
   document.querySelector('#account-password').autocomplete = authMode === 'signup' ? 'new-password' : 'current-password';
   document.querySelector('#account-submit').textContent = authMode === 'signup' ? 'Create account' : 'Sign in';
-  document.querySelector('#auth-switch').hidden = !configured;
-  accountForm.hidden = !configured;
+  accountForm.hidden = !configured || authMethod !== 'email';
+  document.querySelector('#auth-alternatives').hidden = !configured || authMethod !== 'email';
+  document.querySelector('#phone-auth').hidden = !configured || authMethod !== 'phone';
+  document.querySelector('#phone-otp-field').hidden = !phoneOtpSent;
+  document.querySelector('#phone-otp').required = phoneOtpSent;
+  document.querySelector('#phone-submit').textContent = phoneOtpSent ? 'Verify code' : 'Send code';
+  document.querySelector('#phone-resend').hidden = !phoneOtpSent;
+  document.querySelector('#auth-switch').hidden = !configured || authMethod !== 'email';
   showAuthMessage(configured ? '' : 'Account sign-in is unavailable until Supabase is configured.');
 }
 
 function openAccount() {
   authMode = 'signin';
+  authMethod = 'email';
+  phoneOtpSent = false;
+  document.querySelector('#auth-toggle').textContent = 'Create an account';
+  document.querySelector('#auth-switch').firstChild.textContent = 'New to Bazaar? ';
   renderAccount();
   accountDialog.showModal();
 }
@@ -276,6 +289,95 @@ document.querySelector('#auth-toggle').addEventListener('click', () => {
   document.querySelector('#auth-toggle').textContent = authMode === 'signup' ? 'Sign in' : 'Create an account';
   document.querySelector('#auth-switch').firstChild.textContent = authMode === 'signup' ? 'Already have an account? ' : 'New to Bazaar? ';
   renderAccount();
+});
+document.querySelector('#google-signin').addEventListener('click', async () => {
+  if (!supabase) {
+    showAuthMessage('Account sign-in is unavailable until Supabase is configured.');
+    return;
+  }
+  const button = document.querySelector('#google-signin');
+  button.disabled = true;
+  showAuthMessage('');
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin },
+    });
+    if (error) showAuthMessage(error.message);
+  } catch (error) {
+    showAuthMessage(error instanceof Error ? error.message : 'Could not continue with Google. Please try again.');
+  } finally {
+    button.disabled = false;
+  }
+});
+document.querySelector('#phone-signin').addEventListener('click', () => {
+  authMethod = 'phone';
+  phoneOtpSent = false;
+  document.querySelector('#phone-form').reset();
+  renderAccount();
+  document.querySelector('#phone-number').focus();
+});
+document.querySelector('#phone-back').addEventListener('click', () => {
+  authMethod = 'email';
+  phoneOtpSent = false;
+  document.querySelector('#phone-form').reset();
+  showAuthMessage('');
+  renderAccount();
+});
+async function sendPhoneCode(phone) {
+  const { error } = await supabase.auth.signInWithOtp({
+    phone,
+    options: { shouldCreateUser: true },
+  });
+  if (error) {
+    showAuthMessage(error.message);
+    return false;
+  }
+  phoneOtpSent = true;
+  renderAccount();
+  showAuthMessage('Verification code sent. Enter it above to continue.');
+  document.querySelector('#phone-otp').focus();
+  return true;
+}
+document.querySelector('#phone-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  if (!supabase) {
+    showAuthMessage('Account sign-in is unavailable until Supabase is configured.');
+    return;
+  }
+  const phone = document.querySelector('#phone-number').value.trim();
+  const submitButton = document.querySelector('#phone-submit');
+  const resendButton = document.querySelector('#phone-resend');
+  showAuthMessage('');
+  submitButton.disabled = true;
+  resendButton.disabled = true;
+  try {
+    if (!phoneOtpSent) {
+      await sendPhoneCode(phone);
+      return;
+    }
+    const token = document.querySelector('#phone-otp').value.trim();
+    const { error } = await supabase.auth.verifyOtp({ phone, token, type: 'sms' });
+    if (error) showAuthMessage(error.message);
+  } catch (error) {
+    showAuthMessage(error instanceof Error ? error.message : 'Could not verify the code. Please try again.');
+  } finally {
+    submitButton.disabled = false;
+    resendButton.disabled = false;
+  }
+});
+document.querySelector('#phone-resend').addEventListener('click', async () => {
+  const phone = document.querySelector('#phone-number').value.trim();
+  const button = document.querySelector('#phone-resend');
+  button.disabled = true;
+  showAuthMessage('');
+  try {
+    await sendPhoneCode(phone);
+  } catch (error) {
+    showAuthMessage(error instanceof Error ? error.message : 'Could not resend the code. Please try again.');
+  } finally {
+    button.disabled = false;
+  }
 });
 accountForm.addEventListener('submit', async (event) => {
   event.preventDefault();
